@@ -6,25 +6,24 @@ Certifique-se de ter as seguintes ferramentas instaladas em seu ambiente de dese
 
 Node.js (versão recomendada: 18.17.0 ou superior)
 npm (geralmente incluído com a instalação do Node.js)
+
 Configuração do Projeto
-Passo 1: Clonar o Repositório
-bash
-Copiar código
+Passo 1: Clonar o Repositório:
+
 git clone https://github.com/seu-usuario/nome-do-repositorio.git
 cd nome-do-repositorio
+
 Passo 2: Instalar Dependências
 Dentro do diretório do projeto, execute o comando abaixo para instalar todas as dependências listadas no package.json:
 
-bash
-Copiar código
 npm install
+
 Passo 3: Configuração do Firebase
 Acesse o Firebase Console e crie um novo projeto.
 No projeto criado, habilite o Firestore para o banco de dados e Authentication para autenticação.
 Na aba Configurações do Projeto, copie as configurações de integração do Firebase.
 Crie um arquivo firebaseConfig.js na pasta src e cole as configurações:
-javascript
-Copiar código
+
 // src/firebaseConfig.js
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
@@ -43,29 +42,31 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
 Passo 4: Executar o Projeto
 Para iniciar o projeto em ambiente de desenvolvimento:
 
-bash
-Copiar código
 npm start
+
 Acesse http://localhost:3000 no navegador para ver a aplicação.
 
 Bibliotecas e Dependências Principais
 Abaixo estão listadas as dependências essenciais deste projeto:
 
 Firebase: Serviços de autenticação e Firestore para o banco de dados.
-bash
-Copiar código
+
 npm install firebase
+
 React Router: Navegação entre as diferentes páginas da aplicação.
-bash
-Copiar código
+
 npm install react-router-dom
+
 Material-UI: Biblioteca de componentes para a interface moderna e responsiva.
-bash
-Copiar código
+
 npm install @mui/material @emotion/react @emotion/styled
+
+
+
 Estrutura do Projeto
 src/components: Componentes de interface do usuário, como Signup.js, Login.js, Dashboard.js e CadastroPaciente.js.
 src/firebaseConfig.js: Configurações do Firebase.
