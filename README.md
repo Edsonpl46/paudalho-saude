@@ -52,7 +52,7 @@ Inicie o servidor JSON com
 npm run json-server
 
 
-Passo 5: Executar o Projeto
+Passo 6: Executar o Projeto
 Para iniciar o projeto em ambiente de desenvolvimento:
 
 npm start
