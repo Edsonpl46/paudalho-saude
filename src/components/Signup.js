@@ -1,10 +1,6 @@
-// src/components/Signup.js
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
-import { auth, db } from '../firebaseConfig'; // Supondo que db é a instância do Firestore
-import { TextField, Button, Typography, Box, Alert } from '@mui/material';
+import { TextField, Button, Box, Typography, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 function Signup() {
   const [nome, setNome] = useState('');
@@ -18,7 +14,7 @@ function Signup() {
 
   // Função de validação de senha
   const validarSenha = (senha) => {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/; // A senha deve ter pelo menos uma letra maiúscula, uma minúscula e um número
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     return regex.test(senha);
   };
 
@@ -34,49 +30,22 @@ function Signup() {
     }
 
     try {
-      // 1. Verificar se o e-mail já está cadastrado
-      const methods = await fetchSignInMethodsForEmail(auth, email);
-      if (methods.length > 0) {
-        setError('Este e-mail já foi cadastrado. Tente com outro e-mail.');
-        return;
-      }
-
-      // 2. Verificar se o CPF já está cadastrado no Firestore
-      const cpfDocRef = doc(db, 'usuarios', cpf);
-      const cpfDoc = await getDoc(cpfDocRef);
-      if (cpfDoc.exists()) {
-        setError('Este CPF já está cadastrado.');
-        return;
-      }
-
-      // 3. Verificar se o telefone já está cadastrado no Firestore
-      const telefoneDocRef = doc(db, 'usuarios', telefone);
-      const telefoneDoc = await getDoc(telefoneDocRef);
-      if (telefoneDoc.exists()) {
-        setError('Este número de telefone já está cadastrado.');
-        return;
-      }
-
-      // 4. Criar o usuário no Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
-      const user = userCredential.user;
-
-      // 5. Armazenar dados adicionais no Firestore (use o UID para associar)
-      await setDoc(doc(db, 'usuarios', user.uid), {
-        nome,
-        cpf,
-        telefone,
-        email,
-        criadoEm: new Date()
+      const response = await fetch('http://localhost:3001/usuarios', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nome, cpf, telefone, email, senha }),
       });
 
-      // 6. Armazenar o CPF e telefone de forma única
-      // Utilize UID para vincular CPF e telefone ao usuário
-      await setDoc(doc(db, 'usuarios_cpf', cpf), { userId: user.uid });
-      await setDoc(doc(db, 'usuarios_telefone', telefone), { userId: user.uid });
-
-      // 7. Redirecionar para a tela de login
-      navigate('/login');
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert(data.message);
+        navigate('/login');
+      } else {
+        setError(data.error);
+      }
     } catch (error) {
       console.error("Erro ao criar conta:", error);
       setError('Erro ao criar conta. Tente novamente.');
