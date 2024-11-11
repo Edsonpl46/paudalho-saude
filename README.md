@@ -43,7 +43,16 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-Passo 4: Executar o Projeto
+Passo 4: Instale o pacote json-server para simular uma API REST que lida com o JSON como se fosse um banco de dados real.
+ npm install json-server
+
+Passo 5:  Rodando o JSON Server
+Inicie o servidor JSON com
+
+npm run json-server
+
+
+Passo 5: Executar o Projeto
 Para iniciar o projeto em ambiente de desenvolvimento:
 
 npm start
@@ -65,12 +74,3 @@ Material-UI: Biblioteca de componentes para a interface moderna e responsiva.
 
 npm install @mui/material @emotion/react @emotion/styled
 
-
-
-Estrutura do Projeto
-src/components: Componentes de interface do usuário, como Signup.js, Login.js, Dashboard.js e CadastroPaciente.js.
-src/firebaseConfig.js: Configurações do Firebase.
-src/App.js: Configuração das rotas e componentes principais.
-Possíveis Problemas e Soluções
-Erro de autenticação ou configuração não encontrada: Verifique se as credenciais do Firebase estão corretas no arquivo firebaseConfig.js.
-Erro de navegação: Verifique o react-router-dom e a configuração de rotas no App.js.
