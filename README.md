@@ -1,70 +1,76 @@
-# Getting Started with Create React App
+Projeto Saúde Paudalho
+Aplicativo web para cadastro e gerenciamento de usuários da Secretaria de Saúde de Paudalho. Este projeto utiliza Firebase para autenticação e armazenamento de dados, além de uma interface moderna construída com React e Material-UI.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Pré-requisitos
+Certifique-se de ter as seguintes ferramentas instaladas em seu ambiente de desenvolvimento:
 
-## Available Scripts
+Node.js (versão recomendada: 18.17.0 ou superior)
+npm (geralmente incluído com a instalação do Node.js)
 
-In the project directory, you can run:
+Configuração do Projeto
+Passo 1: Clonar o Repositório:
 
-### `npm start`
+git clone https://github.com/seu-usuario/nome-do-repositorio.git
+cd nome-do-repositorio
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Passo 2: Instalar Dependências
+Dentro do diretório do projeto, execute o comando abaixo para instalar todas as dependências listadas no package.json:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+npm install
 
-### `npm test`
+Passo 3: Configuração do Firebase
+Acesse o Firebase Console e crie um novo projeto.
+No projeto criado, habilite o Firestore para o banco de dados e Authentication para autenticação.
+Na aba Configurações do Projeto, copie as configurações de integração do Firebase.
+Crie um arquivo firebaseConfig.js na pasta src e cole as configurações:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+// src/firebaseConfig.js
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
-### `npm run build`
+const firebaseConfig = {
+  apiKey: "AIzaSyA2_upwJIigitzp521_rq00ovKs0MsnSQo",
+  authDomain: "saude-paudalho.firebaseapp.com",
+  projectId: "saude-paudalho",
+  storageBucket: "saude-paudalho.firebasestorage.app",
+  messagingSenderId: "50351405957",
+  appId: "1:50351405957:web:23d76589a79b9d89cf22ec",
+  measurementId: "G-Z4QKVGL91Q"
+};
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Passo 4: Executar o Projeto
+Para iniciar o projeto em ambiente de desenvolvimento:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+npm start
 
-### `npm run eject`
+Acesse http://localhost:3000 no navegador para ver a aplicação.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Bibliotecas e Dependências Principais
+Abaixo estão listadas as dependências essenciais deste projeto:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Firebase: Serviços de autenticação e Firestore para o banco de dados.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+npm install firebase
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+React Router: Navegação entre as diferentes páginas da aplicação.
 
-## Learn More
+npm install react-router-dom
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Material-UI: Biblioteca de componentes para a interface moderna e responsiva.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+npm install @mui/material @emotion/react @emotion/styled
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Estrutura do Projeto
+src/components: Componentes de interface do usuário, como Signup.js, Login.js, Dashboard.js e CadastroPaciente.js.
+src/firebaseConfig.js: Configurações do Firebase.
+src/App.js: Configuração das rotas e componentes principais.
+Possíveis Problemas e Soluções
+Erro de autenticação ou configuração não encontrada: Verifique se as credenciais do Firebase estão corretas no arquivo firebaseConfig.js.
+Erro de navegação: Verifique o react-router-dom e a configuração de rotas no App.js.
