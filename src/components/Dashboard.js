@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Typography, Box, List, ListItem, ListItemText, Grid, Card, CardContent, Collapse, TextField, Avatar, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { getPacientes, addPaciente } from '../services/api'; 
+import { getPacientes, addPaciente,deletePaciente, updatePaciente } from '../services/api'; 
+import data from '../data.json'; // Importando o arquivo data.json
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -25,15 +26,20 @@ function Dashboard({ onLogout, user }) {
     sexo: '',
     dataNascimento: '',
     endereco: { bairro: '' },
-    servicos: []
-  }); 
+    servicos: [],
+    numeroSUS: '', // Adicionando o número do SUS
+  });
+  
+  const [editPaciente, setEditPaciente] = useState(null); // Estado para o paciente sendo editado
   const [expandedCard, setExpandedCard] = useState(null); 
   const [searchText, setSearchText] = useState(''); 
   const [avatarUrl, setAvatarUrl] = useState(user?.fotoUrl || '/default-avatar.png'); 
-  const [openModal, setOpenModal] = useState(false); 
+  const [openModal, setOpenModal] = useState(false);
+  const [openEditModal, setOpenEditModel] = useState(false); // Estado para o model de edição
 
-  const bairros = ['Centro', 'Vila São João', 'Vila Boa Esperança', 'Vila do Sol', 'Sítio do Moinho']; // Lista de bairros
-  const servicos = ['Atendimento médico', 'Exames laboratoriais', 'Consulta psicológica', 'Vacinação', 'Fisioterapia']; // Lista de serviços
+    // Carregando bairros e serviços do data.json
+  const bairros = data.bairros || [];
+  const servicos = data.servicos || [];
   
   useEffect(() => {
     const fetchPacientes = async () => {
@@ -86,10 +92,30 @@ function Dashboard({ onLogout, user }) {
     setOpenModal(false);
   };
 
+  // Função para abrir modal de edição 
+  const handleOpenEditModel = (paciente) => {
+    setEditPaciente(paciente); // Setar o paciente editado
+    setOpenEditModel(true);
+  };
+
+  // Função para fechar model de edição
+  const handleCloseEditModal = () => {
+    setOpenEditModel(false);
+  };
+
   // Função para lidar com mudanças no formulário
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewPaciente((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  // Função para lidar com mudança no formulario de edição
+  const handleEditInputChange = (e) => {
+    const { name, value} = e.target;
+    setEditPaciente((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -101,6 +127,19 @@ function Dashboard({ onLogout, user }) {
     setPacientes((prev) => [...prev, newPaciente]); // Atualiza o estado com o novo paciente
     handleCloseModal(); // Fecha o modal após o envio
   };
+
+   // Função para lidar com o envio do formulário de edição
+  const handleEditSubmit = async () => {
+    await updatePaciente(editPaciente); // Função para atualizar o paciente
+    setPacientes((prev) => prev.map((paciente) => (paciente.cpf === editPaciente.cpf ? editPaciente : paciente))); // Atualiza a lista com os dados editados
+    handleCloseEditModal(); // Fecha o modal de edição
+  };
+
+    // Função para apagar um paciente
+  const handleDelete = async (cpf) => {
+      await deletePaciente(cpf); // Função para excluir o paciente
+      setPacientes((prev) => prev.filter((paciente) => paciente.cpf !== cpf)); // Atualiza a lista removendo o paciente excluído
+    };
 
   const filteredPacientes = pacientes.filter((paciente) => {
     const searchTerm = searchText.toLowerCase();
@@ -147,6 +186,14 @@ function Dashboard({ onLogout, user }) {
             onChange={handleInputChange}
             sx={{ marginBottom: 2 }}
           />
+           <TextField
+            label="Número do SUS"
+            fullWidth
+            value={newPaciente.numeroSUS}
+            name="numeroSUS"
+            onChange={handleInputChange}
+            sx={{ marginBottom: 2 }}
+          />
           <TextField
             label="Sexo"
             fullWidth
@@ -189,6 +236,77 @@ function Dashboard({ onLogout, user }) {
           <Button onClick={handleSubmit}>Cadastrar</Button>
         </DialogActions>
       </Dialog>
+       
+       {/* Modal para edição de paciente */}
+      <Dialog open={openEditModal} onClose={handleCloseEditModal}>
+        <DialogTitle>Editar Paciente</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Nome"
+            fullWidth
+            value={editPaciente?.nome || ''}
+            name="nome"
+            onChange={handleEditInputChange}
+            sx={{ marginBottom: 2 }}
+          />
+          <TextField
+            label="CPF"
+            fullWidth
+            value={editPaciente?.cpf || ''}
+            name="cpf"
+            onChange={handleEditInputChange}
+            sx={{ marginBottom: 2 }}
+          />
+          <TextField
+            label="Número do SUS"
+            fullWidth
+            value={editPaciente?.numeroSUS || ''}
+            name="numeroSUS"
+            onChange={handleEditInputChange}
+            sx={{ marginBottom: 2 }}
+          />
+          <TextField
+            label="Sexo"
+            fullWidth
+            value={editPaciente?.sexo || ''}
+            name="sexo"
+            onChange={handleEditInputChange}
+            sx={{ marginBottom: 2 }}
+          />
+          <TextField
+            label="Data de Nascimento"
+            type="date"
+            fullWidth
+            value={editPaciente?.dataNascimento || ''}
+            name="dataNascimento"
+            onChange={handleEditInputChange}
+            sx={{ marginBottom: 2 }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            label="Bairro"
+            fullWidth
+            value={editPaciente?.endereco?.bairro || ''}
+            name="bairro"
+            onChange={(e) => setEditPaciente({ ...editPaciente, endereco: { bairro: e.target.value } })}
+            sx={{ marginBottom: 2 }}
+          />
+          <TextField
+            label="Serviços"
+            fullWidth
+            value={editPaciente?.servicos.join(', ') || ''}
+            name="servicos"
+            onChange={(e) => setEditPaciente({ ...editPaciente, servicos: e.target.value.split(',') })}
+            sx={{ marginBottom: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditModal}>Cancelar</Button>
+          <Button onClick={handleEditSubmit}>Salvar Alterações</Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Seção de informações do usuário logado */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
@@ -196,8 +314,9 @@ function Dashboard({ onLogout, user }) {
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar src={avatarUrl || '/default-avatar.png'} sx={{ marginRight: 2, width: 60, height: 60, borderRadius: '50%' }} />
           <Typography variant="h6" sx={{ color: '#333', fontWeight: '600' }}>
-            {`Bem-vindo, ${user?.nome || 'Usuário'}`}
+            {`Bem-vindo, ${user?.nome ? user.nome.split(' ')[0] : 'Usuário'}`}
           </Typography>
+
         </Box>
 
         {/* Botões de Upload da Foto e Logout */}
@@ -225,12 +344,13 @@ function Dashboard({ onLogout, user }) {
         sx={{ marginBottom: 4 }}
       />
 
+
       {/* Lista de Pacientes */}
       <List>
         {filteredPacientes.map((paciente, index) => (
           <Card key={index} sx={{ marginBottom: 2, cursor: 'pointer' }} onClick={() => handlePacienteClick(paciente)}>
             <ListItem>
-              <ListItemText primary={paciente.nome} secondary={paciente.cpf} />
+              <ListItemText primary={paciente.nome} secondary={`${paciente.cpf} | SUS: ${paciente.numeroSUS}`}  />
             </ListItem>
             <Collapse in={selectedPaciente === paciente} timeout="auto" unmountOnExit>
               <CardContent>
@@ -238,8 +358,10 @@ function Dashboard({ onLogout, user }) {
                 <Typography variant="body2">Data de Nascimento: {paciente.dataNascimento}</Typography>
                 <Typography variant="body2">Bairro: {paciente.endereco?.bairro}</Typography>
                 <Typography variant="body2">Serviços: {paciente.servicos?.join(', ')}</Typography>
+                <Typography variant="body2">Número do SUS: {paciente.numeroSUS}</Typography> {/* Exibindo número do SUS */}
               </CardContent>
             </Collapse>
+
           </Card>
         ))}
       </List>

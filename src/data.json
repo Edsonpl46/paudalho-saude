@@ -5,6 +5,13 @@
       "email": "usuario@exemplo.com",
       "senha": "senha123",
       "nome": "Usuário de Teste"
+    },
+    {
+      "id": "a58c",
+      "nome": "Edson Paulo Dias da Silva",
+      "cpf": "11541551451",
+      "email": "edsonpl46@gmail.com",
+      "senha": "Devjr100"
     }
   ],
   "pacientes": [
@@ -52,14 +59,10 @@
       ]
     }
   ],
-
   "servicos": [
-    {
-    
-    }
+    {}
   ],
-
   "bairros": [
-    
+   
   ]
 }

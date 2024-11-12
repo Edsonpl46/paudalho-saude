@@ -34,6 +34,28 @@ export const addPaciente = async (paciente) => {
   return response.data;
 };
 
+// Função para atualizar um paciente
+export const updatePaciente = async (paciente) => {
+  try {
+    const response = await axios.put(`${API_URL}/pacientes/${paciente.cpf}`, paciente);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao atualizar paciente:", error);
+    throw error;
+  }
+};
+
+// Função para excluir um paciente
+export const deletePaciente = async (cpf) => {
+  try {
+    const response = await axios.delete(`${API_URL}/pacientes/${cpf}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao excluir paciente:", error);
+    throw error;
+  }
+};
+
 // Função para registrar um novo usuário, garantindo que o email não exista
 export const registerUsuario = async (usuario) => {
   try {
